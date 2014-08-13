@@ -58,8 +58,14 @@ exports.initialize = function(ternDir) {
     var defs = {
       '!name': 'closure',
       goog: {
-        provide: 'fn(name: string) -> !custom:closureProvide',
-        require: 'fn(name: string) -> !custom:closureRequire'
+        provide: {
+          '!effects': ['custom closureProvide'],
+          '!type': 'fn(name: string)'
+        },
+        require: {
+          '!effects': ['custom closureRequire'],
+          '!type': 'fn(name: string)'
+        }
       }
     };
 
@@ -76,20 +82,18 @@ exports.initialize = function(ternDir) {
   infer.registerFunction('closureProvide', function(_self, args, argNodes) {
     if (!argNodes || !argNodes.length || argNodes[0].type != 'Literal' ||
         typeof argNodes[0].value != 'string') {
-      return infer.ANull;
+      return;
     }
     typeManager.defineQualifiedName(argNodes[0].value);
-    return infer.ANull;
   });
 
 
   infer.registerFunction('closureRequire', function(_self, args, argNodes) {
     if (!argNodes || !argNodes.length || argNodes[0].type != 'Literal' ||
         typeof argNodes[0].value != 'string') {
-      return infer.ANull;
+      return;
     }
     typeManager.defineQualifiedName(argNodes[0].value);
-    return infer.ANull;
   });
 };
 
